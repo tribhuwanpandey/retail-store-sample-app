@@ -31,6 +31,13 @@ resource "helm_release" "argocd" {
       server = {
         service = {
           type = "ClusterIP"
+          ports = [
+            {
+              name       = "http"
+              port       = 8080
+              targetPort = 8080
+            }
+          ]
         }
         ingress = {
           enabled = false  # We'll use port-forward for access
