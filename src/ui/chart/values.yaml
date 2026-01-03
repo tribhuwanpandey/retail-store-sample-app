@@ -34,9 +34,6 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
-  # annotations: {}
-  # loadBalancerClass: ""
-  # nodePort: 30000
 resources:
   limits:
     memory: 512Mi
@@ -62,7 +59,6 @@ configMap:
   create: true
   name: # if blank this will be generated
 app:
-  # theme: default
   endpoints:
     catalog: http://retail-store-catalog:80
     carts: http://retail-store-cart-carts:80
@@ -72,16 +68,10 @@ app:
     enabled: false
     provider: ""
     model: ""
-    # temperature: 0.7
-    # maxTokens: 300
-    # prompt: |
-    #   This will override the default system prompt
     bedrock:
       region: ""
     openai:
       baseUrl: ""
-      # apiKey: ""
-## Ingress for NGINX Ingress Controller
 ingress:
   enabled: false
   className: "nginx"
@@ -112,7 +102,7 @@ ingresses:
   - name: domain
     className: "nginx"
     hosts:
-      - retail-store.trainwithshubham.com
+      - retail-store.mynewdomain.com
     annotations:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -124,12 +114,12 @@ ingresses:
     tls:
       - secretName: tls-secret
         hosts:
-          - retail-store.trainwithshubham.com
+          - retail-store.mynewdomain.com
 
 # Cert Manager Configuration
 certManager:
   createClusterIssuer: true
-  email: trainwithshubham@gmail.com
+  email: pluto.aws2025@gmail.com
   clusterIssuerName: "letsencrypt-prod"
   server: "https://acme-v02.api.letsencrypt.org/directory"
   privateKeySecretName: "letsencrypt-prod-key"
