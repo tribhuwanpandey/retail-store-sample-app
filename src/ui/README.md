@@ -1,6 +1,6 @@
 # AWS Containers Retail Sample - UI Service
 
-<!-- Testing deploy-simple.yml -->
+<!-- Testing deploy-simple.yml  ---- -->
 
 | Language | Persistence |
 | -------- | ----------- |
