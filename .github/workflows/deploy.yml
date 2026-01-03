@@ -187,6 +187,7 @@ jobs:
     if: always()
     steps:
       - name: Create deployment summary
+        shell: bash
         env:
           HAS_CHANGES: ${{ needs.detect-changes.outputs.has-changes }}
           CHANGED_SERVICES: ${{ needs.detect-changes.outputs.changed-services }}
