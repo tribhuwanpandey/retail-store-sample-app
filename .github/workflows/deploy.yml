@@ -49,6 +49,7 @@ jobs:
           fi
 
           MATRIX_JSON="["
+
           for i in "${!CHANGED_SERVICES[@]}"; do
             [ $i -gt 0 ] && MATRIX_JSON+=","
             MATRIX_JSON+="\"${CHANGED_SERVICES[$i]}\""
@@ -90,11 +91,13 @@ jobs:
           AWS_ACCOUNT_ID="${{ secrets.AWS_ACCOUNT_ID }}"
           ECR_REPO="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/retail-store-${SERVICE}"
 
+          # Ensure repo exists
           aws ecr describe-repositories --repository-names "retail-store-${SERVICE}" 2>/dev/null || \
           aws ecr create-repository --repository-name "retail-store-${SERVICE}" \
             --image-scanning-configuration scanOnPush=true \
             --encryption-configuration encryptionType=AES256
 
+          # Build & push Docker images
           docker build -t "${ECR_REPO}:${TAG}" -t "${ECR_REPO}:latest" "src/${SERVICE}"
           docker push "${ECR_REPO}:${TAG}"
           docker push "${ECR_REPO}:latest"
@@ -128,24 +131,27 @@ jobs:
           git config user.name "GitOps Bot"
           git config user.email "gitops@github.com"
 
+          # Sync with latest main first
+          git fetch origin main
+          git rebase origin/main
+
           if ! git diff --quiet; then
             git add src/${SERVICE}/chart/values.yaml
             git commit -m "🚀 Update ${SERVICE} Helm chart to ${TAG}"
 
             for i in {1..3}; do
               if git push origin HEAD:main; then
-                echo "✅ Pushed to main"
+                echo "✅ Pushed Helm changes to main"
                 break
               else
                 echo "⚠️ Retry $i"
                 git pull --rebase origin main
                 sleep 2
               fi
-
               [ $i -eq 3 ] && exit 1
             done
           else
-            echo "No changes to commit"
+            echo "ℹ️ No Helm changes to commit"
           fi
 
   summary:
