@@ -30,9 +30,8 @@ jobs:
 
           echo "🔍 Checking for changes in services..."
 
-          # Check for changes in each service
           for service in "${SERVICES[@]}"; do
-            if git diff --name-only HEAD~1 HEAD | grep -q "^src/$service/" || [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
+            if git diff --name-only HEAD~1 HEAD | grep -q "^src/$service/" || [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
               CHANGED_SERVICES+=("$service")
               echo "✅ Changes detected in: $service"
             else
@@ -40,20 +39,18 @@ jobs:
             fi
           done
 
-          # If manual trigger, build all services
-          if [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
+          # Manual trigger builds all services
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             echo "🔄 Manual trigger - building all services"
             CHANGED_SERVICES=("ui" "catalog" "cart" "checkout" "orders")
           fi
 
-          # Check if we have any changes
           if [ ${#CHANGED_SERVICES[@]} -eq 0 ]; then
             echo "❌ No services changed"
             echo "has-changes=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          # Create matrix for changed services only
           MATRIX_JSON="["
           for i in "${!CHANGED_SERVICES[@]}"; do
             if [ $i -gt 0 ]; then
@@ -122,21 +119,13 @@ jobs:
           ECR_REPO="${{ env.ECR_REPO }}"
           VALUES_FILE="src/${SERVICE}/chart/values.yaml"
           
-          echo "📝 Updating Helm values for ${SERVICE}"
-          echo "   Repository: ${ECR_REPO}"
-          echo "   Tag: ${TAG}"
-          echo "   File: ${VALUES_FILE}"
-          
           if [[ ! -f "${VALUES_FILE}" ]]; then
             echo "❌ Values file not found: ${VALUES_FILE}"
             exit 1
           fi
-          
-          echo "📋 Before update (main service image):"
-          grep -A3 "^image:" "${VALUES_FILE}" | head -4 || echo "No main image section found"
-          
+
           cp "${VALUES_FILE}" "${VALUES_FILE}.backup"
-          
+
           awk -v repo="${ECR_REPO}" -v tag="${TAG}" '
           BEGIN { in_main_image = 0; updated_repo = 0; updated_tag = 0 }
           /^image:/ { in_main_image = 1; print; next }
@@ -149,19 +138,15 @@ jobs:
           /^[a-zA-Z]/ && !/^image:/ { in_main_image = 0 }
           { print }
           ' "${VALUES_FILE}.backup" > "${VALUES_FILE}"
-          
+
           if grep -q "${ECR_REPO}" "${VALUES_FILE}" && grep -q "\"${TAG}\"" "${VALUES_FILE}"; then
             echo "✅ Successfully updated ${VALUES_FILE}"
-            echo "📋 After update (main service image):"
-            grep -A3 "^image:" "${VALUES_FILE}" | head -4
-            echo "🔒 Infrastructure images preserved:"
-            grep -A1 "repository:" "${VALUES_FILE}" | grep -E "(mysql|redis|postgres|rabbitmq|dynamodb-local)" || echo "No infrastructure images found"
           else
-            echo "❌ Update failed - restoring backup"
             mv "${VALUES_FILE}.backup" "${VALUES_FILE}"
+            echo "❌ Update failed, restored backup"
             exit 1
           fi
-          
+
           rm "${VALUES_FILE}.backup"
 
       - name: Commit Helm changes for ${{ matrix.service }}
@@ -181,18 +166,18 @@ jobs:
                 echo "✅ Successfully pushed Helm update for ${SERVICE}"
                 break
               else
-                echo "⚠️ Push failed for ${SERVICE}, attempt $i/3. Retrying..."
+                echo "⚠️ Push failed, retry $i/3"
                 git pull --rebase origin main
                 sleep 2
               fi
               
               if [ $i -eq 3 ]; then
-                echo "❌ Failed to push ${SERVICE} after 3 attempts"
+                echo "❌ Failed to push after 3 attempts"
                 exit 1
               fi
             done
           else
-            echo "📝 No Helm changes to commit for ${SERVICE}"
+            echo "📝 No Helm changes to commit"
           fi
 
   summary:
@@ -214,11 +199,11 @@ jobs:
           echo "**Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ "$HAS_CHANGES" == "true" ]; then
+          if [ "$HAS_CHANGES" = "true" ]; then
             echo "**Changed Services:** $CHANGED_SERVICES" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
 
-            if [ "$DEPLOY_RESULT" == "success" ]; then
+            if [ "$DEPLOY_RESULT" = "success" ]; then
               echo "✅ **Status:** Deployment successful" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
               echo "**Actions completed:**" >> $GITHUB_STEP_SUMMARY
@@ -228,7 +213,6 @@ jobs:
               echo "- 🔄 ArgoCD will sync automatically" >> $GITHUB_STEP_SUMMARY
             else
               echo "❌ **Status:** Deployment failed" >> $GITHUB_STEP_SUMMARY
-              echo "Check the workflow logs for details" >> $GITHUB_STEP_SUMMARY
             fi
           else
             echo "ℹ️ **Status:** No services changed - no deployment needed" >> $GITHUB_STEP_SUMMARY
