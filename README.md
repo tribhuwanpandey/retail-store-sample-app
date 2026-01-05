@@ -184,7 +184,17 @@ terraform init
 terraform apply --auto-approve
 ```
 
-<img width="1205" height="292" alt="image" src="https://github.com/user-attachments/assets/6f1e407e-4a4e-4a4c-9bdf-0c9b89681368 , ![alt text](image-2.png)"  />
+<p align="center">
+  <img
+    src="https://github.com/user-attachments/assets/6f1e407e-4a4e-4a4c-9bdf-0c9b89681368"
+    width="45%"
+  />
+  <img
+    src="image-2.png"
+    width="45%"
+  />
+</p>
+
 
 This creates the core infrastructure, including:
 - VPC with public and private subnets
@@ -239,7 +249,17 @@ GitHub Actions will automatically build and push the updated Docker images to Am
 
 
 
-<img width="2868" height="1130" alt="image" src="https://github.com/user-attachments/assets/f29c3416-d630-4463-81d2-aaa8af9a02da , ![alt text](image-3.png)" />
+<img
+  width="1400"
+  alt="Image 1"
+  src="https://github.com/user-attachments/assets/f29c3416-d630-4463-81d2-aaa8af9a02da"
+/>
+
+<img
+  width="1400"
+  alt="Image 2"
+  src="image-3.png"
+/>
 
 
 ### Verify Deployment
@@ -260,7 +280,13 @@ kubectl get svc -n ingress-nginx
 
 Use the EXTERNAL-IP of the ingress-nginx-controller service to access the application.
 
-<img width="2912" height="1756" alt="image" src="![alt text](image-1.png)" />
+<img
+  width="2912"
+  height="1756"
+  alt="image"
+  src="image-1.png"
+/>
+
 
 ### Step 8: Argo CD Automated Deployment:
 
