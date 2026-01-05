@@ -184,7 +184,7 @@ terraform init
 terraform apply --auto-approve
 ```
 
-<img width="1205" height="292" alt="image" src="https://github.com/user-attachments/assets/6f1e407e-4a4e-4a4c-9bdf-0c9b89681368" />
+<img width="1205" height="292" alt="image" src="https://github.com/user-attachments/assets/6f1e407e-4a4e-4a4c-9bdf-0c9b89681368 , ![alt text](image-2.png)"  />
 
 This creates the core infrastructure, including:
 - VPC with public and private subnets
@@ -239,7 +239,7 @@ GitHub Actions will automatically build and push the updated Docker images to Am
 
 
 
-<img width="2868" height="1130" alt="image" src="https://github.com/user-attachments/assets/f29c3416-d630-4463-81d2-aaa8af9a02da" />
+<img width="2868" height="1130" alt="image" src="https://github.com/user-attachments/assets/f29c3416-d630-4463-81d2-aaa8af9a02da , ![alt text](image-3.png)" />
 
 
 ### Verify Deployment
@@ -260,7 +260,7 @@ kubectl get svc -n ingress-nginx
 
 Use the EXTERNAL-IP of the ingress-nginx-controller service to access the application.
 
-<img width="2912" height="1756" alt="image" src="https://github.com/user-attachments/assets/095077d6-d3cb-48f6-b021-e977db5fb242" />
+<img width="2912" height="1756" alt="image" src="![alt text](image-1.png)" />
 
 ### Step 8: Argo CD Automated Deployment:
 
@@ -294,7 +294,7 @@ Password: <output of previous command>
 
 Once ArgoCD is deployed, you can access the web interface:
 
-![ArgoCD UI Dashboard](./docs/images/argocd-ui.png)
+![ArgoCD UI Dashboard](![alt text](image.png))
 
 The ArgoCD UI provides:
 - **Application Status**: Real-time sync status of all services

@@ -2,7 +2,7 @@
 
 This directory contains the Terraform configuration for deploying the retail store application infrastructure on AWS EKS.
 
-## 📁 File Structure
+##  File Structure
 
 ```
 terraform-organized/
@@ -17,7 +17,7 @@ terraform-organized/
 └── README.md                  # This file
 ```
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Prerequisites
 
@@ -71,7 +71,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 # Password: (from step 1)
 ```
 
-## 📋 What Gets Deployed
+##  What Gets Deployed
 
 ### Core Infrastructure
 - **VPC** with public and private subnets across 3 AZs
@@ -86,7 +86,7 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 ### Applications (via ArgoCD)
 - Retail Store microservices (UI, Catalog, Cart, Orders, Checkout)
 
-## 🔧 Customization
+##  Customization
 
 ### Variables
 
@@ -120,7 +120,7 @@ enable_aws_load_balancer_controller = true
 enable_kube_prometheus_stack = true
 ```
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 Internet
@@ -148,7 +148,7 @@ Internet
 └─────────────────┘
 ```
 
-## 🧹 Cleanup
+##  Cleanup
 
 To destroy all resources:
 
